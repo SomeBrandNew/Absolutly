@@ -9,25 +9,13 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static Utils.Utils.generateEmail;
-import static Utils.Utils.generateString;
 import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.given;
+import static utils.PropertyLoader.loadProperty;
+import static utils.Utils.generateEmail;
+import static utils.Utils.generateString;
 
 
-public class sendRequestTests extends ApiTest {
-
-    //Тест на получение кода ответа базы клиентов
-    @Test
-    public void getRequesUsersData() throws JSONException {
-        given()
-                .baseUri(ApiEndpointUrl.GET_USERS_INFO_API_URL)
-                .when()
-                .get()
-                .then()
-                .assertThat()
-                .statusCode(200);
-    }
+public class SendRequestTests {
 
     //проверка создания пользователя и корректности его отображения в БД
     @Test
@@ -35,7 +23,7 @@ public class sendRequestTests extends ApiTest {
         String name = generateString();
         String email = generateEmail("gmail.com", 4);
 
-        Response getResponseOfUserAmountBeforeCreation = get(ApiEndpointUrl.GET_USERS_INFO_API_URL);
+        Response getResponseOfUserAmountBeforeCreation = get(loadProperty("getUsersInfoApiUrl"));
         int amountOfUsersBaseBefore = getResponseOfUserAmountBeforeCreation.jsonPath().getList("created_at").size();
 
         JSONObject requestBody = new JSONObject();
@@ -46,9 +34,9 @@ public class sendRequestTests extends ApiTest {
         RequestSpecification request = RestAssured.given();
         request.header("Content-Type", "application/json");
         request.body(requestBody.toString());
-        Response response = request.post(ApiEndpointUrl.CREATE_USER_API_URL);
+        Response response = request.post(loadProperty("createUserApiUrl"));
 
-        Response getDataAfterUserCreation = get(ApiEndpointUrl.GET_USERS_INFO_API_URL);
+        Response getDataAfterUserCreation = get(loadProperty("getUsersInfoApiUrl"));
 
         List<String> listOfNames = getDataAfterUserCreation.jsonPath().getList("username");
         String newUserName = listOfNames.get(listOfNames.size() - 1);
@@ -79,7 +67,7 @@ public class sendRequestTests extends ApiTest {
         request.header("Content-Type", "application/json");
         request.body(requestBody.toString());
 
-        Response response = request.post(ApiEndpointUrl.CREATE_USER_API_URL);
+        Response response = request.post(loadProperty("createUserApiUrl"));
         int statusCode = response.getStatusCode();
 
         ResponseBody responseBody = response.getBody();
@@ -106,7 +94,7 @@ public class sendRequestTests extends ApiTest {
         request.header("Content-Type", "application/json");
         request.body(requestBody.toString());
 
-        Response response = request.post(ApiEndpointUrl.CREATE_USER_API_URL);
+        Response response = request.post(loadProperty("createUserApiUrl"));
         int statusCode = response.getStatusCode();
         Assert.assertEquals(400, statusCode);
 

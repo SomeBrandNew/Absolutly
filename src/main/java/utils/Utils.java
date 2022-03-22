@@ -1,9 +1,8 @@
-package Utils;
+package utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 
-import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.stream.Collectors;
 
